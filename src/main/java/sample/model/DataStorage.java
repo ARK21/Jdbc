@@ -2,7 +2,12 @@ package sample.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 
 /**
  * Классс отвечает за соединение с базой данных MySQL
@@ -16,10 +21,15 @@ public class DataStorage {
      * Конструкор в котором происходит подключение к базе данных
      */
     public DataStorage() {
+
         try {
+            // считываем данные из cdek.properties
+            FileInputStream file = new FileInputStream("cdek.properties");
+            Properties prop = new Properties(System.getProperties());
+            prop.load(file);
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cdek_schema", "root", "2114");
-        } catch (SQLException | ClassNotFoundException e) {
+            connection = DriverManager.getConnection(prop.getProperty("jdbc.url"), prop.getProperty("jdbc.user"), prop.getProperty("jdbc.password"));
+        } catch (SQLException | ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
     }
